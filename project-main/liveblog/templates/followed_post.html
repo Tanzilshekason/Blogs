@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Followed Posts</h2>
+{% for post in posts %}
+    <h4><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h4>
+{% empty %}
+    <p>You are not following any posts yet.</p>
+{% endfor %}
+{% endblock %}
