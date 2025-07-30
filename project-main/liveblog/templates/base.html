@@ -1,23 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>Live Blog</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Bootstrap RTL CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.rtl.min.css"
+      integrity="sha384-Xbg45MqvDIk1e563NLpGEulpX6AvL404DP+/iCgW9eFa2BqztiwTexswJo2jLMue"
+      crossorigin="anonymous"
+    />
+    
+    <title>{% block title %}User Creation Form{% endblock %}</title>
+
+    <style>
+        /* Force left alignment everywhere */
+        body,
+        .container,
+        .navbar,
+        .navbar-brand,
+        .navbar-nav,
+        .nav-link,
+        .nav-item,
+        footer {
+            text-align: left !important;
+            direction: ltr !important; /* override RTL text direction */
+        }
+
+        /* Align navbar items left and keep spacing */
+        .navbar-nav {
+            justify-content: flex-start !important;
+        }
+
+        /* Margin between nav items */
+        .nav-item:not(:last-child) {
+            margin-right: 1rem !important;
+            margin-left: 0 !important;
+        }
+
+        /* Navbar brand spacing */
+        .navbar-brand {
+            margin-left: 1rem !important;
+            margin-right: 0 !important;
+        }
+
+        /* Container styling */
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        footer {
+            text-align: center !important;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
 </head>
 <body>
+
+<nav class="navbar navbar-expand-lg shadow-sm bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">BLOGS</a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent"
+            aria-controls="navbarContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact</a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link disabled">Logged in as <strong>{{ user.username }}</strong></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile_update' %}">Update Profile</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-success" href="{% url 'login' %}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="container mt-4">
-    <nav class="mb-3">
-        <a href="{% url 'post_list' %}">Home</a> |
-        <a href="{% url 'post_create' %}">New Post</a> |
-        {% if user.is_authenticated %}
-            Logged in as {{ user.username }} |
-            <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-        {% endif %}
-    </nav>
-    {% block content %}{% endblock %}
+    {% block content %}
+    <!-- Your content here -->
+    {% endblock %}
 </div>
+
+<footer>
+    
+</footer>
+
+<!-- Bootstrap Bundle JS -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+  crossorigin="anonymous"
+></script>
+
 </body>
 </html>
