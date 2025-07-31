@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>{{ post.title }}</h2>
+  <p>
+    <strong>Status:</strong> {{ post.status }} |
+    <strong>By:</strong> {{ post.author.username }} |
+    {{ post.timestamp }}
+  </p>
+  <div>{{ post.content }}</div>
+
+  {% if post.image %}
+    <img src="{{ post.image.url }}" class="img-fluid my-3" alt="Post Image">
+  {% endif %}
+
+  <!-- Rating Section -->
+  <!-- <hr> -->
+  <!-- <h3>Average Rating: {{ average_rating|floatformat:1 }} / 5</h3>
+
+  {% if user.is_authenticated %}
+    <form method="post">
+      {% csrf_token %}
+      {{ rating_form.as_p }}
+      <button type="submit" name="rate" class="btn btn-primary">Submit Rating</button>
+    </form> -->
+  {% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to rate this post.</p>
+  {% endif %}
+
+
+{% endblock %}

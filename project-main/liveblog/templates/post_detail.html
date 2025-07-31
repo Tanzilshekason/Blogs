@@ -31,5 +31,58 @@
     <p><a href="{% url 'login' %}">Log in</a> to rate this post.</p>
   {% endif %}
 
+  <!-- Comments Section -->
+  <hr>
+  <h4>Comments (<span id="comment-count">{{ comments.count }}</span>)</h4>
+  <div id="comments">
+    {% for comment in comments %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <strong>{{ comment.user.username }}</strong>
+          <p>{{ comment.content }}</p>
+          <small class="text-muted">{{ comment.timestamp }}</small>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 
+  <!-- Add Comment -->
+  <hr>
+  <h5>Add a Comment</h5>
+  <form method="post" id="comment-form">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit" class="btn btn-primary">Post Comment</button>
+  </form>
+
+  <!-- Navigation -->
+  <a href="{% url 'blog_list' %}" class="btn btn-secondary mt-4">Back to Posts</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const postId = "{{ post.id }}";
+  const user = "{{ request.user.username }}";
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  const socket = new WebSocket(`${protocol}://${window.location.host}/ws/comments/${postId}/`);
+
+  socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    const commentList = document.getElementById("comments");
+    commentList.innerHTML += `
+      <div class="card mt-2"><div class="card-body">
+        <strong>${data.user}</strong><p>${data.content}</p><small>${data.created_at}</small>
+      </div></div>`;
+  };
+
+  document.getElementById("comment-form").onsubmit = function(e) {
+    e.preventDefault();
+    const content = document.getElementById("id_content").value;
+    if (content.trim()) {
+      socket.send(JSON.stringify({ user: user, content: content }));
+      document.getElementById("id_content").value = '';
+    }
+  };
+</script>
 {% endblock %}

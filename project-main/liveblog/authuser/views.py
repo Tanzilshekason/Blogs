@@ -32,7 +32,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, 'Logged out.')
-    return redirect('home')
+    return redirect('blog_list')
 
 @login_required
 def profile_update_view(request):
@@ -42,3 +42,7 @@ def profile_update_view(request):
         messages.success(request, 'Profile updated successfully.')
         return redirect('home')
     return render(request, 'profile_update.html', {'form': form})
+
+
+def admin(request):
+    return render(request, 'admin.html')

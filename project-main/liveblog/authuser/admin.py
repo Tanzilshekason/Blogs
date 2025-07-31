@@ -2,6 +2,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
+admin.site.site_header = 'ADMINPANEL ADMIN'
+admin.site.site_title = 'ADMINPANEL ADMIN PORTAL'
+admin.site.index_title = 'WELCOME TO ADMINPANEL ADMIN PORTAL'
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
@@ -23,3 +28,4 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_active')}
         ),
     )
+

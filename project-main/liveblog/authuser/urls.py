@@ -6,5 +6,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile_update_view, name='profile_update'),
-    # Add dashboard and post URLs
+    
+    # path for admin page
+    #path('admin/', views.admin, name='admin'),
 ]
