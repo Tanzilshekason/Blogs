@@ -5,6 +5,50 @@ from .models import LivePost, Comment
 from .forms import LivePostForm, CommentForm
 from django.core.paginator import Paginator
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
+def broadcast_post(post):
+    channel_layer = get_channel_layer()
+    html = render_to_string('post_card.html', {'post': post})
+    async_to_sync(channel_layer.group_send)(
+        "live_posts",
+        {
+            "type": "send_post",
+            "data": {
+                "html": html,
+                "id": post.id,
+                "author": post.author.username,
+            },
+        },
+    )
+
+def test_broadcast(request):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "live_posts",
+        {
+            "type": "send_post",
+            "data": {"html": "<div>Test Post</div>", "id": 0},
+        }
+    )
+    return JsonResponse({"status": "sent"})
+
+def broadcast_delete(post_id):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "live_posts",
+        {
+            "type": "delete_post",
+            "data": {
+                "id": post_id,
+            },
+        },
+    )
+
+
 
 def home(request):
     return render(request, 'base.html')
@@ -25,6 +69,7 @@ def blog_create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            broadcast_post(post)
             return redirect('blog_list')
     else:
         form = LivePostForm()
@@ -37,6 +82,7 @@ def blog_update(request, pk):
         form = LivePostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
+            broadcast_post(post)
             return redirect('blog_list')
     else:
         form = LivePostForm(instance=post)
@@ -46,25 +92,14 @@ def blog_update(request, pk):
 def blog_delete(request, pk):
     post = get_object_or_404(LivePost, pk=pk, author=request.user)
     if request.method == 'POST':
+        post_id = post.id
         post.delete()
+        broadcast_delete(post_id)
         return redirect('blog_list')
     return render(request, 'blog_confirm_delete.html', {'post': post})
 
 
-# View for comments
-@login_required
-def post_detail(request, pk):
-    post = get_object_or_404(LivePost, pk=pk)
-    comments = post.comments.all()
-    comment_form = CommentForm(request.POST or None)
-    if request.method == 'POST' and comment_form.is_valid():
-        comment = comment_form.save(commit=False)
-        comment.user = request.user
-        comment.post = post
-        comment.save()
-        return redirect('post_detail', pk=pk)
-    return render(request, 'post_detail.html', {
-        'post': post,
-        'comments': comments,
-        'comment_form': comment_form
-    })
+
+
+
+

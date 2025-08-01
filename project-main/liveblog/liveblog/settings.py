@@ -26,8 +26,7 @@ SECRET_KEY = 'django-insecure-b^%p6q1z8@%1fwy!!8ysq7e$ijo_gt4)-q$6z5frn53ku+*b&5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -40,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
 
     #apps
     'authuser',
@@ -77,6 +77,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'liveblog.wsgi.application'
+ASGI_APPLICATION = 'liveblog.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

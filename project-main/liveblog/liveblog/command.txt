@@ -1,0 +1,2 @@
+To run real time update command
+daphne -p 8000 liveblog.asgi:application
