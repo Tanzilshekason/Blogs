@@ -100,6 +100,26 @@ def blog_delete(request, pk):
 
 
 
+#Comment view
+@login_required
+def post_detail(request, pk):
+    post = get_object_or_404(LivePost, pk=pk)
+    comments = post.comments.all()
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.user = request.user
+            comment.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        comment_form = CommentForm()
+    return render(request, 'post_detail1.html', {
+        'post': post,
+        'comments': comments,
+        'comment_form': comment_form
+    })
 
 
 

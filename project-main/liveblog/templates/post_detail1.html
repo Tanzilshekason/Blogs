@@ -1,35 +1,44 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}{{ post.title }}{% endblock %}
+{% extends "base.html" %}
 
 {% block content %}
 <div class="container mt-4">
-  <h2>{{ post.title }}</h2>
-  <p>
-    <strong>Status:</strong> {{ post.status }} |
-    <strong>By:</strong> {{ post.author.username }} |
-    {{ post.timestamp }}
-  </p>
-  <div>{{ post.content }}</div>
+    <div class="card">
+        <div class="card-body">
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content }}</p>
 
-  {% if post.image %}
-    <img src="{{ post.image.url }}" class="img-fluid my-3" alt="Post Image">
-  {% endif %}
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="img-fluid mb-3">
+            {% endif %}
 
-  <!-- Rating Section -->
-  <!-- <hr> -->
-  <!-- <h3>Average Rating: {{ average_rating|floatformat:1 }} / 5</h3>
+            <p class="text-muted">
+                By {{ post.author }} on {{ post.created_at|date:"M d, Y H:i" }}
+            </p>
+        </div>
+    </div>
 
-  {% if user.is_authenticated %}
+    <hr>
+
+    <h4>Comments</h4>
+    <div class="mb-3">
+        {% for comment in comments %}
+            <div class="border p-2 mb-2">
+                <strong>{{ comment.user.username }}</strong>:
+                {{ comment.content }}
+                <div class="text-muted small">{{ comment.created_at|date:"M d, Y H:i" }}</div>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <h5>Add a comment</h5>
     <form method="post">
-      {% csrf_token %}
-      {{ rating_form.as_p }}
-      <button type="submit" name="rate" class="btn btn-primary">Submit Rating</button>
-    </form> -->
-  {% else %}
-    <p><a href="{% url 'login' %}">Log in</a> to rate this post.</p>
-  {% endif %}
-
-
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 {% endblock %}

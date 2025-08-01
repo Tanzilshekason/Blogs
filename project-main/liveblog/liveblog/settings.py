@@ -129,7 +129,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Django default timezone
+#TIME_ZONE = 'UTC'
+
+# Indian timezone
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

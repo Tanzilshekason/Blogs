@@ -1,6 +1,7 @@
 <div class="card mb-4 shadow-sm" id="post-{{ post.id }}">
     <div class="card-body">
         <h2 class="card-title">{{ post.title }}</h2>
+        
 
         <p class="card-text text-muted">
             {{ post.content|truncatechars:200 }}
@@ -19,6 +20,7 @@
         {% if request.user == post.author %}
             <a href="{% url 'blog_update' post.pk %}" class="btn btn-sm btn-outline-primary me-2">Edit</a>
             <a href="{% url 'blog_delete' post.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            <a href="{% url 'post_detail' post.pk %}" class="btn btn-sm btn-outline-danger">Comment</a>
         {% endif %}
     </div>
 </div>
